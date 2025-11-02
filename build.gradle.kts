@@ -1,1 +1,8 @@
-// Root build
+﻿plugins { }
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

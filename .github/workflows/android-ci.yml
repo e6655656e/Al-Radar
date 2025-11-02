@@ -1,14 +1,8 @@
-name: Android CI
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
+﻿name: Android CI
+on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,30 +11,17 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: 17
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.7
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --warning-mode=all
+      - name: Build
+        run: gradle :app:assembleDebug --stacktrace --info
 
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: AI_Radar_APK
-          path: app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Upload build logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-logs
-          path: |
-            **/build/reports/**
-            **/build/outputs/logs/**
-            **/*.gradle.kts
-            **/AndroidManifest.xml
+          path: app/build/outputs/apk/debug/*.apk
