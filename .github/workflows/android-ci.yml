@@ -19,15 +19,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Gradle Build
-        uses: gradle/gradle-build-action@v3
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.7
-          arguments: |
-            :app:assembleDebug
-            --stacktrace
-            --info
-            --warning-mode=all
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace --warning-mode=all
 
       - name: Upload APK
         if: success()
@@ -42,8 +40,7 @@ jobs:
         with:
           name: build-logs
           path: |
-            app/build/reports/**
-            app/build/outputs/logs/**
-            **/build.gradle.kts
-            **/settings.gradle.kts
-            **/proguard-rules.pro
+            **/build/reports/**
+            **/build/outputs/logs/**
+            **/*.gradle.kts
+            **/AndroidManifest.xml
