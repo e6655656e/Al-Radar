@@ -1,3 +1,3 @@
-# Al-Radar
+# AI_Radar
 
-Android sample app for CI build.
+تطبيق أندرويد تجريبي مع CI يبني APK عبر GitHub Actions.
