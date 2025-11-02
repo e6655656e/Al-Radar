@@ -3,6 +3,7 @@ name: Android CI
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,19 +17,33 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: '17'
 
-      - name: Set up Gradle 8.7
-        uses: gradle/actions/setup-gradle@v4
+      - name: Gradle Build
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.7
+          arguments: |
+            :app:assembleDebug
+            --stacktrace
+            --info
+            --warning-mode=all
 
-      - name: Build Debug APK (with logs)
-        run: gradle assembleDebug --stacktrace --info
-
-      - name: Upload APK (if build succeeds)
+      - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: AI_Radar_APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            app/build/reports/**
+            app/build/outputs/logs/**
+            **/build.gradle.kts
+            **/settings.gradle.kts
+            **/proguard-rules.pro
